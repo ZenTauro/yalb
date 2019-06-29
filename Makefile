@@ -20,10 +20,12 @@ back = backend
 $(front) $(back) :
 	git submodule init
 
-backend_bin :
+backend_bin : $(back)
 	(cd $(back) && cargo +nightly build --release) && cp $(back)/target/release/live_board backend_bin
 
-frontend_build :
-	(cd $(front) && npm run build --release) && cp $(front)/build frontend_build
+frontend_build : $(front)
+	(cd $(front) && npm run build --release) && cp -r $(front)/build frontend_build
+
+all : backend_bin frontend_build
 
 .PHONY : container
