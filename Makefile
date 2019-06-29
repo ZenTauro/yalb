@@ -21,8 +21,8 @@ BUILD_DIR = build
 front = frontend
 back = backend
 
-$(front) $(back) :
-	git submodule init
+$(back) $(front) :
+	git submodule update --recursive --init --progress
 
 build_dir :
 	mkdir -p $(BUILD_DIR)/$(back)
