@@ -14,17 +14,25 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with Yalb. If not, see <http://www.gnu.org/licenses/>.
 
+.DEFAULT_GOAL := all
+
+BUILD_DIR = build
+
 front = frontend
 back = backend
 
 $(front) $(back) :
 	git submodule init
 
-backend_bin : $(back)
-	(cd $(back) && cargo +nightly build --release) && cp $(back)/target/release/live_board backend_bin
+build_dir :
+	mkdir -p $(BUILD_DIR)/$(back)
+	mkdir -p $(BUILD_DIR)/$(front)
 
-frontend_build : $(front)
-	(cd $(front) && npm run build --release) && cp -r $(front)/build frontend_build
+backend_bin : $(back) build_dir
+	(cd $(back) && cargo +nightly build --release) && cp $(back)/target/release/live_board $(BUILD_DIR)/$(back)/backend_bin
+
+frontend_build : $(front) build_dir
+	(cd $(front) && npm run build --release) && cp -r $(front)/build $(BUILD_DIR)/$(front)/frontend_build
 
 all : backend_bin frontend_build
 
